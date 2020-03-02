@@ -2,12 +2,11 @@ import React, { useEffect, Fragment } from 'react';
 import { connect } from 'react-redux'
 import { getPokeball, getPokeballPokemons } from '../../reducers/pokeball'
 import { fetchPokemons } from '../../actions/pokemons'
+import { removePokemon } from '../../actions/pokeball'
 import Pokemon from "../Pokemon"
 import { List } from 'antd';
-import { Link } from 'react-router-dom';
-import * as ROUTES from '../../constants/routes';
 
-export const Pokeball = ({names, items, fetchPokemons}) => {
+export const Pokeball = ({names, items, fetchPokemons, removeFromPokeball}) => {
     useEffect(() => {
         fetchPokemons(names);
     }, [names]);
@@ -26,7 +25,7 @@ export const Pokeball = ({names, items, fetchPokemons}) => {
             dataSource={items}
             renderItem={pokemon => (
                 <List.Item>
-                    <Link to={ROUTES.POKEMON.replace(':name', pokemon.name)}><Pokemon {...pokemon} /></Link>
+                    <Pokemon {...pokemon} onDelete={removeFromPokeball} />
                 </List.Item>
             )}
         />
@@ -39,6 +38,7 @@ export default connect(
         names: getPokeball(state)
     }),
     dispatch => ({
-        fetchPokemons: (pokemon) => dispatch(fetchPokemons(pokemon))
+        fetchPokemons: (pokemon) => dispatch(fetchPokemons(pokemon)),
+        removeFromPokeball: (pokemon) => dispatch(removePokemon(pokemon))
     })
 )(Pokeball);
